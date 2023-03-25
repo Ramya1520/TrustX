@@ -17,14 +17,26 @@ function Publisherpage() {
   const handleShow1 = () => setShow1(true);
 
   useEffect(() => {
-    fetch("https://b1db9323-a6f5-4c92-b089-17457f1cbb07.mock.pstmn.io/publisherpublish", {
-      method: 'GET',
-    }
-    )
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", process.env.REACT_APP_BACKEND_API);
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "privatekey": process.env.REACT_APP_PRIVATE_KEY,
+      "address": "0xcf5273eF64 C06d1A273C3634e73d9296fCf09e54",
+      "isPublished": false
+    });
+
+    fetch(process.env.REACT_APP_BACKEND + "/api/publisher_home", {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw
+    })
       .then(res => res.json())
       .then(data => {
-        setPublisherpage(data)
-        setFilterdata(data)
+        setPublisherpage(data.papers)
+        setFilterdata(data.papers)
       })
       .catch(err => console.log(err));
   }, [])
