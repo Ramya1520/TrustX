@@ -1,0 +1,23 @@
+.card-dir{
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center;
+   column-gap: 66px;
+}
+.profile1{
+    width:55%
+}
+.cit{
+    display: flex;
+    justify-content: flex-end;
+}
+.org {
+    padding-left: 36px;
+}
+.see-send{
+    display: flex;
+    row-gap: 12pX;
+}
+.over-row {
+    row-gap: 15px;
+}
