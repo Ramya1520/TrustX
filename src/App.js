@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Routes, Route } from 'react-router-dom'
 import Allpaper from './component/Allpaper';
 import Authors from './component/Authors';
+import Requests from './component/Requests';
 function App(){
    return(
     <div className='index'>
@@ -15,6 +16,7 @@ function App(){
         <Route path="/allpaper" element={<Allpaper />} />
         <Route path="" element={<Publisherpage />} />
         <Route path="/authors" element={<Authors />} />
+        <Route path="/requests" element={<Requests />} />
       </Routes>
     </div>
    )

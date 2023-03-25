@@ -12,12 +12,7 @@ function Header() {
   const [allpaper,setAllpaper]=useState(false)
   const [requests,setRequests]=useState(false)
   const [Author,setAuthor]=useState(false)
-  const [style,setStyle]=useState()
   const navigate=useNavigate()
-  
-  useEffect(()=>{
-    console.log(allpaper)
-  },[allpaper])
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const navbarClass = scrollPosition > 0 ? "navbar1 shadow bc" : "navbar1"
@@ -42,7 +37,6 @@ function Header() {
     }
 
     window.addEventListener('scroll', handleScroll);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -53,6 +47,7 @@ function Header() {
     setAuthor(false)
     setAllpaper(false)
     setpublish(false)
+    navigate('/requests')
   }
   
   function Auth(){
@@ -80,7 +75,7 @@ function Header() {
     navigate('/')
   }
   return (
-    <Navbar className={""} expand="lg" fixed="top">
+    <Navbar className={navbarClass} expand="lg" fixed="top">
       <div className='row header-row ' style={{width:"100vw",backgroundColor:"white" }}>
         <div className='col-sm-12 left-header'>
           <div className='col-sm-6 btnlogo'>
@@ -88,7 +83,7 @@ function Header() {
             <Login/>
           </div>
           <div className='col-sm-6 btnspace'>
-            <Button onClick={() => Req()} className={requests?"text-blue":"text-black"}  variant="light">Requests</Button>
+            <Button onClick={() => Req()} className={requests?"text-blue":"text-black"}   variant="light">Requests</Button>
             <Button onClick={() => Auth()} className={Author?"text-blue":"text-black"}  variant="light">Authors</Button>
             <Button  onClick={() => All()} className={allpaper?"text-blue":"text-black"}  variant="light">AllPapers</Button>
             <Button  onClick={() => Pub()} className={publish?"text-blue":"text-black"}  variant="light">Publish </Button>
