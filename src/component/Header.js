@@ -6,13 +6,20 @@ import Button from 'react-bootstrap/Button';
 import { Navbar, Nav } from "react-bootstrap";
 import { Navigate,useNavigate } from 'react-router-dom';
 import Allpaper from './Allpaper';
+import { useLocation } from 'react-router-dom';
 function Header() {
   const [hasScrolled, setHasScrolled] = useState(false);
   const [publish,setpublish]=useState(true)
   const [allpaper,setAllpaper]=useState(false)
   const [requests,setRequests]=useState(false)
   const [Author,setAuthor]=useState(false)
+  const [style,setStyle]=useState()
   const navigate=useNavigate()
+  const Location=useLocation()
+  
+  useEffect(()=>{
+    console.log(allpaper)
+  },[allpaper])
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const navbarClass = scrollPosition > 0 ? "navbar1 shadow bc" : "navbar1"
@@ -37,45 +44,27 @@ function Header() {
     }
 
     window.addEventListener('scroll', handleScroll);
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   function Req(){
-    setRequests(true)
-    setAuthor(false)
-    setAllpaper(false)
-    setpublish(false)
     navigate('/requests')
   }
   
   function Auth(){
-    setAuthor(true)
-    setRequests(false)
-    setAllpaper(false)
-    setpublish(false)
     navigate('/authors')
   }
-  
   function All(){  
-    setAllpaper(true)
-    setRequests(false)
-    setAuthor(false)
-    setpublish(false)
  navigate('/allpaper')
   }
-
-  
   function Pub(){
-    setpublish(true)
-    setRequests(false)
-    setAuthor(false)
-    setAllpaper(false)
     navigate('/')
   }
   return (
-    <Navbar className={navbarClass} expand="lg" fixed="top">
+    <Navbar className={""} expand="lg" fixed="top">
       <div className='row header-row ' style={{width:"100vw",backgroundColor:"white" }}>
         <div className='col-sm-12 left-header'>
           <div className='col-sm-6 btnlogo'>
@@ -83,10 +72,10 @@ function Header() {
             <Login/>
           </div>
           <div className='col-sm-6 btnspace'>
-            <Button onClick={() => Req()} className={requests?"text-blue":"text-black"}   variant="light">Requests</Button>
-            <Button onClick={() => Auth()} className={Author?"text-blue":"text-black"}  variant="light">Authors</Button>
-            <Button  onClick={() => All()} className={allpaper?"text-blue":"text-black"}  variant="light">AllPapers</Button>
-            <Button  onClick={() => Pub()} className={publish?"text-blue":"text-black"}  variant="light">Publish </Button>
+            <Button  onClick={() => Req()} className={Location.pathname === '/requests' ? 'text-blue' : 'text-black'} variant="light">Requests</Button>
+            <Button onClick={() => Auth()}  className={Location.pathname === '/authors' ? 'text-blue' : 'text-black'}   variant="light">Authors</Button>
+            <Button  onClick={() => All()}  className={Location.pathname === '/allpaper' ? 'text-blue' : 'text-black'}   variant="light">AllPapers</Button>
+            <Button  onClick={() => Pub()} className={Location.pathname === '/' ? 'text-blue' : 'text-black'}   variant="light">Publish </Button>
           </div>
         </div>
       </div>

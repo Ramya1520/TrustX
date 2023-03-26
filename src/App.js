@@ -11,6 +11,7 @@ import Authors from './component/Authors';
 import Requests from './component/Requests';
 import Enduserallpaper from './component/Enduserallpaper';
 import React, { createContext, useContext } from 'react';
+import Enduserauthor from './component/EnduserAuthor';
 export const UserContext = createContext(null);
 function App(){
 
@@ -73,6 +74,7 @@ function App(){
         <Route path="/authors" element={<Authors />} />
         <Route path="/requests" element={<Requests />} />
         <Route path="/Enduserallpaper" element={<Enduserallpaper />} />
+        <Route path="/enduserauthor" element={<Enduserauthor />} />
       </Routes>
       </UserContext.Provider>
     </div>
