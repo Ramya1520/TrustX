@@ -5,7 +5,6 @@ import { Button } from 'react-bootstrap';
 import metamask from './assets/meta.png';
 import './Login.css'
 
-
 function Login(){
     let options = {dappMetadata: {name: "TrustX", url: "http://localhost:3000"}};
     const MMSDK = new MetaMaskSDK(options);
@@ -14,7 +13,6 @@ function Login(){
     const ethereum = MMSDK.getProvider();
     useEffect(() => {
       const checkLoggedIn = async() => {
-      
         if(ethereum.selectedAddress) {
           console.log(ethereum.selectedAddress,"true")
           let ii = await ethereum.request({ method: 'eth_requestAccounts', params: [] });
@@ -57,7 +55,7 @@ function Login(){
       let ii = await ethereum.request({ method: 'eth_requestAccounts', params: [] });
       setUser(ii);
     };
-
+console.log(user,"user")
 return(
     <div className="App">
     <div>

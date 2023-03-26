@@ -8,8 +8,8 @@ import { Navigate,useNavigate } from 'react-router-dom';
 import Allpaper from './Allpaper';
 function Header() {
   const [hasScrolled, setHasScrolled] = useState(false);
-  const [publish,setpublish]=useState(true)
-  const [allpaper,setAllpaper]=useState(false)
+  const [publish,setpublish]=useState(false)
+  const [allpaper,setAllpaper]=useState(true)
   const [requests,setRequests]=useState(false)
   const [Author,setAuthor]=useState(false)
   const navigate=useNavigate()
@@ -42,17 +42,17 @@ function Header() {
     };
   }, []);
 
-  function Req(){
-    setRequests(true)
-    setAuthor(false)
-    setAllpaper(false)
-    setpublish(false)
-    navigate('/requests')
+  function Chat(){
+    // setRequests(true)
+    // setAuthor(false)
+    // setAllpaper(false)
+    // setpublish(false)
+    // navigate('/requests')
   }
   
   function Auth(){
-    setAuthor(true)
     setRequests(false)
+    setAuthor(true)
     setAllpaper(false)
     setpublish(false)
     navigate('/authors')
@@ -67,12 +67,12 @@ function Header() {
   }
 
   
-  function Pub(){
-    setpublish(true)
-    setRequests(false)
-    setAuthor(false)
-    setAllpaper(false)
-    navigate('/')
+  function Notification(){
+    // setRequests(false)
+    // setAuthor(false)
+    // setAllpaper(false)
+    // setpublish(true)
+    // navigate('/')
   }
   return (
     <Navbar className={navbarClass} expand="lg" fixed="top">
@@ -83,10 +83,11 @@ function Header() {
             <Login/>
           </div>
           <div className='col-sm-6 btnspace'>
-            <Button onClick={() => Req()} className={requests?"text-blue":"text-black"}   variant="light">Requests</Button>
+            <Button onClick={() => Chat()} className={requests?"text-blue":"text-black"}   variant="light">Notification</Button>
+            <Button  onClick={() => Notification()} className={publish?"text-blue":"text-black"}  variant="light">Chat </Button>
             <Button onClick={() => Auth()} className={Author?"text-blue":"text-black"}  variant="light">Authors</Button>
             <Button  onClick={() => All()} className={allpaper?"text-blue":"text-black"}  variant="light">AllPapers</Button>
-            <Button  onClick={() => Pub()} className={publish?"text-blue":"text-black"}  variant="light">Publish </Button>
+         
           </div>
         </div>
       </div>
