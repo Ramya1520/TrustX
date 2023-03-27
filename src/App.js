@@ -12,7 +12,10 @@ import Requests from './component/Requests';
 import Enduserallpaper from './component/Enduserallpaper';
 import React, { createContext, useContext } from 'react';
 import Enduserauthor from './component/EnduserAuthor';
+import LastPublish from './component/LastPublish';
+
 export const UserContext = createContext(null);
+
 function App(){
 
   let options = {dappMetadata: {name: "TrustX", url: "http://localhost:3000"}};
@@ -73,8 +76,9 @@ function App(){
         <Route path="" element={<Publisherpage />} />
         <Route path="/authors" element={<Authors />} />
         <Route path="/requests" element={<Requests />} />
-        <Route path="/Enduserallpaper" element={<Enduserallpaper />} />
+        <Route path="/enduserallpaper" element={<Enduserallpaper />} />
         <Route path="/enduserauthor" element={<Enduserauthor />} />
+        <Route path="/lastpublish" element={<LastPublish />} />
       </Routes>
       </UserContext.Provider>
     </div>

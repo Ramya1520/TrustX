@@ -4,6 +4,8 @@ import Card from 'react-bootstrap/Card';
 import './PublisherPage.css'
 import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
+import { useContext } from 'react';
+import { UserContext } from "../App.js";
 function Publisherpage() {
   const [publisherpage, setPublisherpage] = useState()
   const [filterdata, setFilterdata] = useState();
@@ -15,16 +17,17 @@ function Publisherpage() {
   const handleShow = () => setShow(true);
   const handleClose1 = () => setShow1(false);
   const handleShow1 = () => setShow1(true);
+  const user = useContext(UserContext);
 
   useEffect(() => {
-
+if(user){
     var myHeaders = new Headers();
     myHeaders.append("Authorization", process.env.REACT_APP_BACKEND_API);
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
       "privatekey": process.env.REACT_APP_PRIVATE_KEY,
-      "address": "0xcf5273eF64 C06d1A273C3634e73d9296fCf09e54",
+      "address": user[0],
       "isPublished": false
     });
 
@@ -39,7 +42,8 @@ function Publisherpage() {
         setFilterdata(data.papers)
       })
       .catch(err => console.log(err));
-  }, [])
+    }
+  }, [user])
 
   const Details = () => {
     fetch("https://b1db9323-a6f5-4c92-b089-17457f1cbb07.mock.pstmn.io/publisherpublish", {
@@ -107,6 +111,7 @@ function Publisherpage() {
   return (
     <div>
       <Header />
+      {publisherpage ?<div>
       <div style={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 1, backgroundColor: "white" }}>
         <input type="type" className='form-control  searchbar' onChange={(e) => filterNames(e)} placeholder="Search Title" />
       </div>
@@ -178,6 +183,9 @@ function Publisherpage() {
           })}
         </Modal.Body>
       </Modal>
+      </div>:<div>
+             <h3 className='please'>Please Login</h3>
+            </div>}
     </div>
   )
 }

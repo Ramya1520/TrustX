@@ -26,3 +26,8 @@
   .crd-1 {
     margin-top: 15%;
   }
+  .please {
+    display: flex;
+    justify-content: center;
+    margin-top: 25%;
+  }
