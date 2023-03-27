@@ -12,7 +12,7 @@ import Requests from './component/Requests';
 import Enduserallpaper from './component/Enduserallpaper';
 import React, { createContext, useContext } from 'react';
 import Enduserauthor from './component/EnduserAuthor';
-import LastPublish from './component/LastPublish';
+import LastPublish from './component/Authorpublish';
 
 export const UserContext = createContext(null);
 
@@ -26,12 +26,10 @@ function App(){
   useEffect(() => {
     const checkLoggedIn = async() => {
       if(ethereum.selectedAddress) {
-        console.log(ethereum.selectedAddress,"true")
         let ii = await ethereum.request({ method: 'eth_requestAccounts', params: [] });
         setUser(ii);
       }
       else{
-        console.log(ethereum.selectedAddress,"fal")
       }
     };
     checkLoggedIn();

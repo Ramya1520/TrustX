@@ -50,7 +50,6 @@ function Requests() {
 
     const filterNames = e => {
         const search = e.target.value.toLowerCase()
-        console.log(search, "search")
         const filteredtitle = filterdata.filter(searchbar => searchbar.author.toLowerCase().includes(search))
         setAuthorsdetail(filteredtitle)
     }

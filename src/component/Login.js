@@ -14,12 +14,12 @@ function Login(){
     useEffect(() => {
       const checkLoggedIn = async() => {
         if(ethereum.selectedAddress) {
-          console.log(ethereum.selectedAddress,"true")
+    
           let ii = await ethereum.request({ method: 'eth_requestAccounts', params: [] });
           setUser(ii);
         }
         else{
-          console.log(ethereum.selectedAddress,"fal")
+         
         }
       };
       checkLoggedIn();
@@ -55,7 +55,7 @@ function Login(){
       let ii = await ethereum.request({ method: 'eth_requestAccounts', params: [] });
       setUser(ii);
     };
-console.log(user,"user")
+
 return(
     <div className="App">
     <div>

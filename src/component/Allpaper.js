@@ -131,9 +131,7 @@ function Allpaper() {
             return (
               <div>
                 <h6>{element.reviewer}</h6>
-                <p style={{ textAlign: 'justify' }}>{element.comment}nnmmmmmmmbhjhjv hjhb jbjh njjn j nj jhghgjhghughjgj  iuhi hiuhiniuniiuniuhuiu  huhuihiuhiuhuj hiuuhiu iuhiuhiu  iu iuh h  uhiuhiuhi u  giu h   hu h ui  hiuh uihu</p>
-                {console.log(element.comment, "-------------com")}
-                {console.log(element.reviewer, "--------------rev")}
+                <p style={{ textAlign: 'justify' }}>{element.comment}</p>
               </div>
             )
           })}

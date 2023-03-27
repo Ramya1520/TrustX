@@ -26,8 +26,6 @@ function Enduserallpaper() {
   const [rating, setRating] = useState();
   const userob = Object.assign({}, user);
   const handleSubmit = () => {
-
-    console.log(feedback,"feedback")
   };
 
   useEffect(() => {
@@ -84,7 +82,6 @@ function Enduserallpaper() {
   const ratingChanged = (newRating) => {
 setRating(newRating)
   };
-  console.log(feedback,"feedback")
   return (
     <div>
       <Header/>

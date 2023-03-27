@@ -16,10 +16,6 @@ function Header() {
   const [style,setStyle]=useState()
   const navigate=useNavigate()
   const Location=useLocation()
-  
-  useEffect(()=>{
-    console.log(allpaper)
-  },[allpaper])
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const navbarClass = scrollPosition > 0 ? "navbar1 shadow bc" : "navbar1"
@@ -64,6 +60,7 @@ function Header() {
     navigate('/')
   }
   return (
+    <div className='row'>
     <Navbar className={""} expand="lg" fixed="top">
       <div className='row header-row ' style={{width:"100vw",backgroundColor:"white" }}>
         <div className='col-sm-12 left-header'>
@@ -80,6 +77,8 @@ function Header() {
         </div>
       </div>
       </Navbar>
+      </div>
+
   );
 }
 
