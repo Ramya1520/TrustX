@@ -4,7 +4,9 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import MetaMaskSDK from '@metamask/sdk';
 import './Header.css'
+import './LastPublish.css'
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
 function LastPublish() {
   const [formData, setFormData] = useState({
@@ -15,7 +17,7 @@ function LastPublish() {
     references: '',
     file: null
   });
-  
+
   const handleChange1 = (event) => {
     const { name, value } = event.target;
     setFormData({
@@ -24,55 +26,29 @@ function LastPublish() {
     });
   };
 
-  const handleFileChange1 = (event) => {
-    setFormData({
-      ...formData,
-      file: event.target.files[0]
-    });
-  };
-
-  const handleSubmit1 = (event) => {
-    event.preventDefault();
-    console.log(formData);
-  };
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const handleFileChange = (event) => {
-    setFormData({
-      ...formData,
-      file: event.target.files[0]
-    });
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(formData);
   };
-  let options = {dappMetadata: {name: "TrustX", url: "http://localhost:3000"}};
+  let options = { dappMetadata: { name: "TrustX", url: "http://localhost:3000" } };
   const MMSDK = new MetaMaskSDK(options);
   const [selectedFile, setSelectedFile] = useState();
   const [user, setUser] = useState();
-  const ethereum = MMSDK.getProvider(); // You can also access via window.ethereum
+  const ethereum = MMSDK.getProvider();
   useEffect(() => {
-    const checkLoggedIn = async() => {
-      if(ethereum.isConnected()) {
+    const checkLoggedIn = async () => {
+      if (ethereum.isConnected()) {
         let ii = await ethereum.request({ method: 'eth_requestAccounts', params: [] });
         setUser(ii);
       }
     };
     checkLoggedIn();
-  },[ethereum]);
+  }, [ethereum]);
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
   };
-  const handleSubmission = async() => {
+  const handleSubmission = async () => {
     const formData = new FormData();
     formData.append('file', selectedFile)
     const metadata = JSON.stringify({
@@ -96,61 +72,30 @@ function LastPublish() {
       console.log(error);
     }
   };
-  const handleLogin = async() => {
-    // const ethereum = MMSDK.getProvider(); // You can also access via window.ethereum
-    let ii = await ethereum.request({ method: 'eth_requestAccounts', params: [] });
-    setUser(ii);
-  };
+
 
 
   return (
     <div>
-        <Header/>
-  <div style={{marginTop:"150px" ,display:"flex",justifyContent:"center"}}>
-    <form onSubmit={handleSubmit}>
-        <div className='row' style={{marginTop:"20px"}}>
-           
-      <label>
-        Title:
-        <input type="text" name="title" value={formData.title} onChange={handleChange1}  style={{marginLeft:"153px"}}/>
-      </label>
+      <Header />
+        <Card className='author-card'>
+          <Card.Body>
+              <form onSubmit={handleSubmit} className="author-form">
+                <input type="text" placeholder='Title' name="title" value={formData.title} onChange={handleChange1} />
+                <input type="number" placeholder='   Total number of authors' name="numAuthors" value={formData.numAuthors} />
+                <input type="text" placeholder='  Primary author' name="primaryAuthor" value={formData.primaryAuthor} onChange={handleChange1} />
+                <select name="paperType" placeholder="Type of paper" value={formData.paperType} onChange={handleChange1}>
+                  <option value="research">Research</option>
+                  <option value="review">Review</option>
+                  <option value="case-study">Case Study</option>
+                </select>
+                <textarea name="references" placeholder='References' value={formData.references} onChange={handleChange1}></textarea>
+                  <input type="file" onChange={changeHandler} />
+                  <Button onClick={handleSubmission}>Submit</Button>
+              </form>
+          </Card.Body>
+        </Card>
       </div>
-      <div className='row'  style={{marginTop:"20px"}}>
-      <label>
-        Total number of authors:
-        <input type="number" name="numAuthors" value={formData.numAuthors} onChange={handleChange1} />
-      </label>
-      </div>
-      <div className='row '  style={{marginTop:"20px"}}>
-      <label>
-        Primary author:
-        <input type="text" name="primaryAuthor" value={formData.primaryAuthor} onChange={handleChange1}  style={{marginLeft:"72px"}}/>
-      </label>
-      </div>
-      <div className='row'  style={{marginTop:"20px"}}>
-      <label>
-        Type of paper:
-        <select name="paperType" value={formData.paperType} onChange={handleChange1}  style={{marginTop:"20px",marginLeft:"87px"}}>
-          <option value="research">Research</option>
-          <option value="review">Review</option>
-          <option value="case-study">Case Study</option>
-        </select>
-      </label>
-      </div>
-      <div className='row'  style={{marginTop:"20px"}}>
-      <label>
-        References:
-        <textarea name="references" value={formData.references} onChange={handleChange1}  style={{marginLeft:"106px"}}></textarea>
-      </label>
-      </div>
-      <div className='row'>
-        <label className="form-label">Choose File</label>
-      <input type="file"  onChange={changeHandler}/>
-      <Button className='a' onClick={handleSubmission}>Submit</Button>
-      </div>
-    </form>
-    </div>
-    </div>
   );
 }
 
