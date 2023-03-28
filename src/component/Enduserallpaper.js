@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import Header from './Header'
 import Card from 'react-bootstrap/Card';
 import './PublisherPage.css'
 import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import Rating from "react-rating-stars-component";
 import './Allpaper.css'
+import Header from './EnduserHeader';
 import { useContext } from 'react';
 import { UserContext } from "../App.js";
+import './Enduserallpaper.css'
 
-function Allpaper() {
+function Enduserallpaper() {
   const [publisherpage, setPublisherpage] = useState()
   const [filterdata, setFilterdata] = useState();
   const [viewreview, setViewreview] = useState()
@@ -21,34 +22,24 @@ function Allpaper() {
   const handleClose1 = () => setShow1(false);
   const handleShow1 = () => setShow1(true);
   const user = useContext(UserContext);
-  
+  const [feedback, setFeedback] = useState({user_id:user,feedback:"",rating:0});
+  const [rating, setRating] = useState();
+  const userob = Object.assign({}, user);
+  const handleSubmit = () => {
+  };
 
   useEffect(() => {
-    if(user){
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", process.env.REACT_APP_BACKEND_API);
-        myHeaders.append("Content-Type", "application/json");
-    
-        var raw = JSON.stringify({
-          "privatekey": process.env.REACT_APP_PRIVATE_KEY,
-          "address": user[0],
-          "isPublished": true
-        });
-    
-        fetch(process.env.REACT_APP_BACKEND + "/api/publisher_home", {
-          method: 'POST',
-          headers: myHeaders,
-          body: raw
-        })
-          .then(res => res.json())
-          .then(data => {
-            setPublisherpage(data.papers)
-            setFilterdata(data.papers)
-          })
-          .catch(err => console.log(err));
-        }
-      }, [user])
-    
+    fetch("https://b1db9323-a6f5-4c92-b089-17457f1cbb07.mock.pstmn.io/publisherpublish", {
+      method: 'GET',
+    }
+    )
+      .then(res => res.json())
+      .then(data => {
+        setPublisherpage(data)
+        setFilterdata(data)
+      })
+      .catch(err => console.log(err));
+  }, [])
 
   const See_Abstract = async (id) => {
     try {
@@ -65,19 +56,23 @@ function Allpaper() {
     handleShow1()
   }
 
-  const View_Review = async (id) => {
+  const Give_feedback = async (id) => {
+    handleShow()
+  }
+  const Submit = async (id) => {
     try {
-      const response = await fetch("https://f98375b8-2beb-4b97-8f4d-863c96e09021.mock.pstmn.io/review", {
+      const response = await fetch("", {
         method: 'POST',
-        body: JSON.stringify({ "id": id }),
+        body: JSON.stringify(feedback ),
       })
       const data = await response.json();
-      setViewreview(data);
+      setAbstract(data);
 
     } catch (error) {
       console.log(error);
     }
-    handleShow()
+ 
+  handleClose()
   }
   const filterNames = e => {
     const search = e.target.value.toLowerCase()
@@ -85,13 +80,11 @@ function Allpaper() {
     setPublisherpage(filteredtitle)
   }
   const ratingChanged = (newRating) => {
-    console.log(newRating);
+setRating(newRating)
   };
-
   return (
     <div>
-      <Header />
-      {publisherpage ?<div>
+      <Header/>
       <div className='card-space'>
         <input type="type" className='form-control  searchbar' onChange={(e) => filterNames(e)} placeholder="Search Title" />
         {
@@ -113,10 +106,9 @@ function Allpaper() {
                     <div className='col-sm-6 stars'  >
                       <Rating
                         count={5}
+                        value={feedback.rating}
                         onChange={ratingChanged}
                         size={24}
-                        edit={false}
-                        value={2}
                         activeColor="#ffd700"
                       />
                     </div>
@@ -126,7 +118,8 @@ function Allpaper() {
                   <div className="row">
                     <div className='col-sm-6 card-left'>
                       <Button variant="dark" onClick={() => { See_Abstract(element.id) }} >See Abstract</Button>
-                      <Button variant="primary" onClick={() => { View_Review(element.id) }} >View Feedback</Button>
+                      <Button variant="primary" onClick={() => { Give_feedback() }} >Give Feedback</Button>
+                      <Button variant="primary" onClick={() => { Give_feedback(element.id) }} >Vote</Button>
                     </div>
                     <div className='col-sm-6 card-right' >
                       <a href={element.url} download>
@@ -143,17 +136,33 @@ function Allpaper() {
       </div>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Reviews</Modal.Title>
+          <Modal.Title>Feedback</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {viewreview?.map((element) => {
-            return (
-              <div>
-                <h6>{element.reviewer}</h6>
-                <p style={{ textAlign: 'justify' }}>{element.comment}</p>
-              </div>
-            )
-          })}
+        <form onSubmit={handleSubmit}>
+          <div className='row field-gap'>
+          <div className='col-sm-3'>
+            <label>User  </label>
+            </div>
+            <div className='col-sm-9'>
+            <input type="text" value={user} name="username" style={{"width":"70%"}}/>
+            </div>
+            <div className='col-sm-3'>
+            <label>Feedback  </label>
+            </div>
+            <div className='col-sm-9'>
+            <textarea placeholder='Give your feedback'style={{"width":"70%"}} value={feedback.feedback} onChange={e => setFeedback({
+                    user_id: user[0],
+                      feedback: e.target.value,
+                      rating: rating
+                  })
+                  } name="feedback" />               
+       </div>
+       </div>
+       <div className="submit">
+          <Button onClick={Submit}>Submit</Button>
+          </div>
+        </form>
         </Modal.Body>
       </Modal>
       <Modal show={show1} onHide={handleClose1}>
@@ -170,10 +179,8 @@ function Allpaper() {
           })}
         </Modal.Body>
       </Modal>
-      </div>:<div>
-             <h3 className='please'>Please Login</h3>
-            </div>}
+      
     </div>
   )
 }
-export default Allpaper
+export default Enduserallpaper

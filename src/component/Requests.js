@@ -4,15 +4,10 @@ import Card from 'react-bootstrap/Card';
 import './PublisherPage.css'
 import './Authors.css'
 import { Button } from 'react-bootstrap';
-import Modal from 'react-bootstrap/Modal';
 import profile from './assets/profile7.png'
-function Authors() {
+function Requests() {
     const [authorsdetail, setAuthorsdetail] = useState();
     const [filterdata, setFilterdata] = useState();
-    const [show, setShow] = useState(false);
-    const [selectedAuthorFollowers, setSelectedAuthorFollowers] = useState([]);
-    const handleClose = () => setShow(false);
-
     useEffect(() => {
         fetch("https://49bf9624-3f5a-4856-bc0e-0ea4216a24b6.mock.pstmn.io/authors", {
             method: 'GET',
@@ -39,9 +34,9 @@ function Authors() {
             .catch(err => console.log(err));
     }
 
-    const Send_Request = async (id) => {
+    const Delete_request = async (id) => {
         try {
-            const response = await fetch("https://9d3cfcba-3b6c-4a81-8eab-4086ff838dcc.mock.pstmn.io/seeabstract", {
+            const response = await fetch("", {
                 method: 'POST',
                 body: JSON.stringify({ "id": id }),
             })
@@ -50,6 +45,7 @@ function Authors() {
             console.log(error);
         }
         Details()
+
     }
 
     const filterNames = e => {
@@ -58,15 +54,10 @@ function Authors() {
         setAuthorsdetail(filteredtitle)
     }
 
-    const handleShow = (index) => {
-        setSelectedAuthorFollowers(authorsdetail[index].followers);
-        setShow(true);
-    };
-
     return (
         <div>
             <Header />
-            <div style={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 1, backgroundColor: "white" }}>
+            <div style={{ position: "fixed", top: 0, width: "100%", zIndex: 1, backgroundColor: "white" }}>
                 <input type="type" className='form-control  searchbar' onChange={(e) => filterNames(e)} placeholder="Search Title" />
             </div>
             <div className='crd-1'>
@@ -106,8 +97,8 @@ function Authors() {
                                                 </div>
                                             </div>
                                             <div className='see-send row'>
-                                                <Button variant="success" onClick={() => { handleShow(index); }}> See Followers</Button>
-                                                <Button variant="primary" onClick={() => { Send_Request(element.id) }} >Send Request</Button>
+                                                <Button variant="success">View Status</Button>
+                                                <Button variant="danger" onClick={() => { Delete_request(element.id) }} >Delete Request</Button>
                                             </div>
                                         </Card.Body>
                                     </Card>
@@ -118,28 +109,8 @@ function Authors() {
                     </div>
                 </div>
             </div>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        Followers
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {selectedAuthorFollowers.length > 0 ? (
-                        <ul>
-                            {selectedAuthorFollowers.map((follower, index) => (
-                                <li key={index}>{follower}</li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>No followers for this author.</p>
-                    )}
-                </Modal.Body>
-            </Modal>
-
         </div>
     )
 }
-export default Authors
-
+export default Requests
 

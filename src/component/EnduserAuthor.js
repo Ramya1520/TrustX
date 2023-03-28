@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import Header from './Header'
 import Card from 'react-bootstrap/Card';
 import './PublisherPage.css'
 import './Authors.css'
 import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
-import profile from './assets/profile7.png'
-function Authors() {
+import profile from './assets/profile7.png';
+import Header from './EnduserHeader';
+function Enduserauthor() {
     const [authorsdetail, setAuthorsdetail] = useState();
     const [filterdata, setFilterdata] = useState();
     const [show, setShow] = useState(false);
@@ -106,7 +106,7 @@ function Authors() {
                                                 </div>
                                             </div>
                                             <div className='see-send row'>
-                                                <Button variant="success" onClick={() => { handleShow(index); }}> See Followers</Button>
+                                                <Button variant="success" onClick={() => { handleShow(index); }}> Follow</Button>
                                                 <Button variant="primary" onClick={() => { Send_Request(element.id) }} >Send Request</Button>
                                             </div>
                                         </Card.Body>
@@ -140,6 +140,6 @@ function Authors() {
         </div>
     )
 }
-export default Authors
+export default Enduserauthor
 
 

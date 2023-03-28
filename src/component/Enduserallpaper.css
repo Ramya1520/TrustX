@@ -1,0 +1,7 @@
+.field-gap{
+    row-gap: 30px;
+}
+.submit{
+    display: flex;
+    justify-content: flex-end;
+}

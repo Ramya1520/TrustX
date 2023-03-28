@@ -29,3 +29,10 @@
 .text-black {
     background-color:"black"
 }
+.a{
+    width: 85px;
+    display: flex;
+    justify-content: end;
+    margin-left: 245px;
+}
+

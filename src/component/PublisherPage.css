@@ -23,16 +23,11 @@
     margin-bottom: 2%;
     background-color: white;
 }
-/* .searchbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1;
-  } */
-  .searchbar {
-
-  }
   .crd-1 {
     margin-top: 15%;
+  }
+  .please {
+    display: flex;
+    justify-content: center;
+    margin-top: 25%;
   }
