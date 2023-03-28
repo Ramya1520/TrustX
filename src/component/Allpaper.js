@@ -6,6 +6,8 @@ import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import Rating from "react-rating-stars-component";
 import './Allpaper.css'
+import { useContext } from 'react';
+import { UserContext } from "../App.js";
 
 function Allpaper() {
   const [publisherpage, setPublisherpage] = useState()
@@ -18,19 +20,35 @@ function Allpaper() {
   const [show1, setShow1] = useState(false);
   const handleClose1 = () => setShow1(false);
   const handleShow1 = () => setShow1(true);
+  const user = useContext(UserContext);
+  
 
   useEffect(() => {
-    fetch("https://b1db9323-a6f5-4c92-b089-17457f1cbb07.mock.pstmn.io/publisherpublish", {
-      method: 'GET',
-    }
-    )
-      .then(res => res.json())
-      .then(data => {
-        setPublisherpage(data)
-        setFilterdata(data)
-      })
-      .catch(err => console.log(err));
-  }, [])
+    if(user){
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", process.env.REACT_APP_BACKEND_API);
+        myHeaders.append("Content-Type", "application/json");
+    
+        var raw = JSON.stringify({
+          "privatekey": process.env.REACT_APP_PRIVATE_KEY,
+          "address": user[0],
+          "isPublished": true
+        });
+    
+        fetch(process.env.REACT_APP_BACKEND + "/api/publisher_home", {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw
+        })
+          .then(res => res.json())
+          .then(data => {
+            setPublisherpage(data.papers)
+            setFilterdata(data.papers)
+          })
+          .catch(err => console.log(err));
+        }
+      }, [user])
+    
 
   const See_Abstract = async (id) => {
     try {
@@ -73,6 +91,7 @@ function Allpaper() {
   return (
     <div>
       <Header />
+      {publisherpage ?<div>
       <div className='card-space'>
         <input type="type" className='form-control  searchbar' onChange={(e) => filterNames(e)} placeholder="Search Title" />
         {
@@ -151,6 +170,9 @@ function Allpaper() {
           })}
         </Modal.Body>
       </Modal>
+      </div>:<div>
+             <h3 className='please'>Please Login</h3>
+            </div>}
     </div>
   )
 }

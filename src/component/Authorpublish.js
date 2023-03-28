@@ -20,16 +20,19 @@ function LastPublish() {
   const [user, setUser] = useState();
   const ethereum = MMSDK.getProvider();
   console.log(inputValues, "inputValues")
-  const handleInputChange = (index, event) => {
-    const values = [...inputValues];
-    values[index] = event.target.value;
-    setInputValues(values);
-  };
+  
   const handleAddFields = () => {
     const values = [...inputValues];
     values.push('');
     setInputValues(values);
   };
+  
+  const handleInputChange = (index, event) => {
+    const values = [...inputValues];
+    values[index] = event.target.value;
+    setInputValues(values);
+  };
+ 
   useEffect(() => {
     setFormData({ ...formData, primaryAuthor: inputValues });
     console.log(formData)
@@ -128,7 +131,7 @@ function LastPublish() {
                     <div className='col-sm-6'>
                     <input type="file" onChange={changeHandler} className="choose" />
                     </div>
-                   
+
                       {inputValues.map((value, index) => (
                         <div className='col-sm-6'>
                           <input
@@ -139,6 +142,7 @@ function LastPublish() {
                           />
                         </div>
                       ))}
+
                     </div>
                     <div className='row'>
                     <div className='col-sm-6'>
