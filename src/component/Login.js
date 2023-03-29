@@ -15,7 +15,7 @@ function Login() {
 
   const user = useContext(UserContext).user;
   const setUser = useContext(UserContext).setUser;
-  const rpc = useContext(UserContext).rpc;
+  // const rpc = useContext(UserContext).rpc;
   const setRPC = useContext(UserContext).setRPC;
 
   const clientId = process.env.REACT_APP_WEB3AUTH_CLIENTID;
@@ -104,7 +104,6 @@ function Login() {
     
     if (web3authProvider) {
       const rpc_ = new RPC(web3authProvider);
-      // var balance = await rpc.getBalance();
 
       setUser(await rpc_.getAccounts());
       setRPC(rpc_);

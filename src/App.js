@@ -16,10 +16,6 @@ function App(){
 
   let [user, setUser] = useState();
   let [rpc, setRPC] = useState();
-
-  // useEffect(() => {
-
-  // }, []);
  
    return(
     <div className='index'>

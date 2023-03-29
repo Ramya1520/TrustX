@@ -1,10 +1,12 @@
 import Web3 from "web3";
 
 export default class EthereumRpc {
-  provider = undefined;
 
   constructor(provider) {
     this.provider = provider;
+    this.getAccounts().then((user) => {
+      this.contract = this.getContract(user);
+    });
   }
 
   getContract(fromAddress) {
@@ -14,11 +16,10 @@ export default class EthereumRpc {
     try {
       const web3 = new Web3(this.provider);
 
-      var contract = new web3.eth.Contract(contractABI.abi, contractADDR, {
+      let contract = new web3.eth.Contract(contractABI.abi, contractADDR, {
         from: fromAddress,
         // gasPrice: '20000000000' // default gas price in wei, 20 gwei in this case
       });
-
       return contract;
     } catch (error) {
       console.log(error);
@@ -70,37 +71,6 @@ export default class EthereumRpc {
     }
   }
 
-  async getPaperCount(fromAddress) {
-    try {
-      let contract = this.getContract(fromAddress);
-      if (contract) {
-        var count = await contract.methods.paperCount().call();
-        return count;
-      }
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async getPublisherHome(fromAddress, flag) {
-    try {
-      let contract = this.getContract(fromAddress);
-      if (contract) {
-        var paper_ids = await contract.methods.getPapers(fromAddress, flag).call();
-        let papers = [];
-
-        for(let i =0;i<paper_ids.length;i++) {
-          let paper = await contract.methods.readPaper_alternate(paper_ids[i]).call();
-          papers.push(paper);
-        }
-
-        return papers;
-      }
-    } catch (error) {
-      return error;
-    }
-  }
-
   async getPrivateKey() {
     try {
       const privateKey = await this.provider.request({
@@ -110,6 +80,57 @@ export default class EthereumRpc {
       return privateKey;
     } catch (error) {
       return error;
+    }
+  }
+
+  async getPaperCount() {
+    try {
+      if (this.contract) {
+        var count = await this.contract.methods.paperCount().call();
+        return count;
+      }
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async getPublisherHome(fromAddress, flag) {
+    try {
+      if (this.contract) {
+        var paper_ids = await this.contract.methods.getPapers(fromAddress, flag).call();
+        let papers = [];
+
+        for(let i =0;i<paper_ids.length;i++) {
+          let paper = await this.contract.methods.readPaper_alternate(paper_ids[i]).call();
+          papers.push(paper);
+        }
+
+        return papers;
+      }
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  }
+
+  async publishPaper(paperId) {
+    try {
+      if (this.contract) {
+        await this.contract.methods.publishPaper(paperId).call();
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async addAuthor() {
+    try {
+
+    } catch (error) {
+      console.log(error);
+      return false;
     }
   }
 }
