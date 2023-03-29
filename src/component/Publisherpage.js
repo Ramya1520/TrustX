@@ -6,6 +6,8 @@ import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { useContext } from 'react';
 import { UserContext } from "../App.js";
+import RPC from "../web3RPC";
+
 function Publisherpage() {
   const [publisherpage, setPublisherpage] = useState()
   const [filterdata, setFilterdata] = useState();
@@ -17,32 +19,27 @@ function Publisherpage() {
   const handleShow = () => setShow(true);
   const handleClose1 = () => setShow1(false);
   const handleShow1 = () => setShow1(true);
-  const user = useContext(UserContext);
+  const user = useContext(UserContext).user;
+  const rpc = new RPC(useContext(UserContext).provider);
 
   useEffect(() => {
-if(user){
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", process.env.REACT_APP_BACKEND_API);
-    myHeaders.append("Content-Type", "application/json");
+    const init = async () => {
+      if (user) {
+        
+        var papers = await rpc.getPublisherHome(user);
+  
+        console.log("=== ", papers);
+        let data = [];
+        papers.forEach(element => {
+          data.push(element[0]);
+        });
 
-    var raw = JSON.stringify({
-      "privatekey": process.env.REACT_APP_PRIVATE_KEY,
-      "address": user[0],
-      "isPublished": false
-    });
-
-    fetch(process.env.REACT_APP_BACKEND + "/api/publisher_home", {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw
-    })
-      .then(res => res.json())
-      .then(data => {
-        setPublisherpage(data.papers)
-        setFilterdata(data.papers)
-      })
-      .catch(err => console.log(err));
-    }
+        setPublisherpage(data);
+        setFilterdata(data);
+      }
+    };
+    init();
+    
   }, [user])
 
   const Details = () => {
@@ -85,9 +82,8 @@ if(user){
     } catch (error) {
       console.log(error);
     }
-    handleShow1()
+    handleShow1();
   }
-  console.log(abstract,"dddd")
 
   const Publish = async (id) => {
     try {
@@ -111,81 +107,81 @@ if(user){
   return (
     <div>
       <Header />
-      {publisherpage ?<div>
-      <div style={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 1, backgroundColor: "white" }}>
-        <input type="type" className='form-control  searchbar' onChange={(e) => filterNames(e)} placeholder="Search Title" />
-      </div>
-      <div className='crd-1'>
-        <div className='card-space'>
-          {
-            publisherpage?.map((element, index) => (
-              <div className='card-div'>
-                <Card style={{ width: '90vw' }}>
-                  <Card.Body>
-                    <Card.Title>{element.title}</Card.Title>
-                    <div className='row'>
-                      <div className='col-sm-6' style={{ display: "flex" }}>
-                        <Card.Subtitle className="mb-2 text-muted">{element.author}</Card.Subtitle>
-                        <Card.Subtitle className="mb-2 text-muted"> {"| "} </Card.Subtitle>
-                        <Card.Subtitle className="mb-2 text-muted">{element.id}</Card.Subtitle>
-                      </div>
-                    </div>
-                    <Card.Text>
-                      {element.year}
-                    </Card.Text>
-                    <Card.Link href="#">{element.papertype}</Card.Link>
-                    <div className="row">
-                      <div className='col-sm-6 card-left'>
-                        <Button variant="primary" onClick={() => { View_Review(element.id) }} >View Reviews</Button>
-                        <Button variant="dark" onClick={() => { See_Abstract(element.id) }} >See Abstract</Button>
-                        <Button variant="success" onClick={() => { Publish(element.id) }}>Publish</Button>
-                      </div>
-                      <div className='col-sm-6 card-right' >
-                        <a href={element.url} download>
-                          <Button className='btnwidth' variant="danger">Download </Button>
-                        </a>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </div>
-            )
-            )
-          }
+      {publisherpage ? <div>
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 1, backgroundColor: "white" }}>
+          <input type="type" className='form-control  searchbar' onChange={(e) => filterNames(e)} placeholder="Search Title" />
         </div>
-      </div>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Reviews</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {viewreview?.map((element) => {
-            return (
-              <div>
-                <h6>{element.reviewer}</h6>
-                <p style={{ textAlign: 'justify' }}>{element.comment}</p>
-              </div>
-            )
-          })}
-        </Modal.Body>
-      </Modal>
-      <Modal show={show1} onHide={handleClose1}>
-        <Modal.Header closeButton>
-          <Modal.Title>Abstract</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {abstract?.map((element) => {
-            return (
-              <div>
-                <p style={{ textAlign: 'justify' }}>{element.abstract}</p>
-              </div>
-            )
-          })}
-        </Modal.Body>
-      </Modal>
-      </div>:<div>
-             <h3 className='please'>Please Login</h3>
-            </div>}
+        <div className='crd-1'>
+          <div className='card-space'>
+            {
+              publisherpage?.map((element, index) => (
+                <div className='card-div'>
+                  <Card style={{ width: '90vw' }}>
+                    <Card.Body>
+                      <Card.Title>{element.title}</Card.Title>
+                      <div className='row'>
+                        <div className='col-sm-6' style={{ display: "flex" }}>
+                          <Card.Subtitle className="mb-2 text-muted">{element.author}</Card.Subtitle>
+                          <Card.Subtitle className="mb-2 text-muted"> {"| "} </Card.Subtitle>
+                          <Card.Subtitle className="mb-2 text-muted">{element.id}</Card.Subtitle>
+                        </div>
+                      </div>
+                      <Card.Text>
+                        {element.year}
+                      </Card.Text>
+                      <Card.Link href="#">{element.papertype}</Card.Link>
+                      <div className="row">
+                        <div className='col-sm-6 card-left'>
+                          <Button variant="primary" onClick={() => { View_Review(element.id) }} >View Reviews</Button>
+                          <Button variant="dark" onClick={() => { See_Abstract(element.id) }} >See Abstract</Button>
+                          <Button variant="success" onClick={() => { Publish(element.id) }}>Publish</Button>
+                        </div>
+                        <div className='col-sm-6 card-right' >
+                          <a href={element.url} download>
+                            <Button className='btnwidth' variant="danger">Download </Button>
+                          </a>
+                        </div>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </div>
+              )
+              )
+            }
+          </div>
+        </div>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Reviews</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {viewreview?.map((element) => {
+              return (
+                <div>
+                  <h6>{element.reviewer}</h6>
+                  <p style={{ textAlign: 'justify' }}>{element.comment}</p>
+                </div>
+              )
+            })}
+          </Modal.Body>
+        </Modal>
+        <Modal show={show1} onHide={handleClose1}>
+          <Modal.Header closeButton>
+            <Modal.Title>Abstract</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {abstract?.map((element) => {
+              return (
+                <div>
+                  <p style={{ textAlign: 'justify' }}>{element.abstract}</p>
+                </div>
+              )
+            })}
+          </Modal.Body>
+        </Modal>
+      </div> : <div>
+        <h3 className='please'>Please Login</h3>
+      </div>}
     </div>
   )
 }

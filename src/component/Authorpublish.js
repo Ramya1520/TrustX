@@ -1,7 +1,6 @@
 import Header from './EnduserHeader';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import MetaMaskSDK from '@metamask/sdk';
 import './Header.css'
 import './LastPublish.css'
 import Button from 'react-bootstrap/Button';
@@ -14,12 +13,8 @@ function LastPublish() {
     paperType: '',
     references: '',
   });
-  let options = { dappMetadata: { name: "TrustX", url: "http://localhost:3000" } };
-  const MMSDK = new MetaMaskSDK(options);
+  
   const [selectedFile, setSelectedFile] = useState();
-  const [user, setUser] = useState();
-  const ethereum = MMSDK.getProvider();
-  console.log(inputValues, "inputValues")
   
   const handleAddFields = () => {
     const values = [...inputValues];
@@ -52,14 +47,9 @@ function LastPublish() {
   };
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
-      if (ethereum.isConnected()) {
-        let ii = await ethereum.request({ method: 'eth_requestAccounts', params: [] });
-        setUser(ii);
-      }
-    };
-    checkLoggedIn();
-  }, [ethereum]);
+    
+  }, []);
+
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
   };

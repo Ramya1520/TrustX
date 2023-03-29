@@ -1,72 +1,128 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import MetaMaskSDK from '@metamask/sdk';
+import { useEffect, useState, useContext } from 'react';
 import { Button } from 'react-bootstrap';
 import metamask from './assets/meta.png';
-import './Login.css'
+import './Login.css';
+import { UserContext } from "../App.js";
+import { Web3Auth } from "@web3auth/modal";
+import { WALLET_ADAPTERS, CHAIN_NAMESPACES, SafeEventEmitterProvider } from "@web3auth/base";
+import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import RPC from "../web3RPC";
 
-function Login(){
-    let options = {dappMetadata: {name: "TrustX", url: "http://localhost:3000"}};
-    const MMSDK = new MetaMaskSDK(options);
-    const [selectedFile, setSelectedFile] = useState();
-    const [user, setUser] = useState();
-    const ethereum = MMSDK.getProvider();
-    useEffect(() => {
-      const checkLoggedIn = async() => {
-        if(ethereum.selectedAddress) {
-    
-          let ii = await ethereum.request({ method: 'eth_requestAccounts', params: [] });
-          setUser(ii);
-        }
-        else{
-         
-        }
-      };
-      checkLoggedIn();
-    },[ethereum]);
-    const changeHandler = (event) => {
-      setSelectedFile(event.target.files[0]);
-    };
-    const handleSubmission = async() => {
-      const formData = new FormData();
-      formData.append('file', selectedFile)
-      const metadata = JSON.stringify({
-        name: selectedFile.name,
-      });
-      formData.append('pinataMetadata', metadata);
-      const options = JSON.stringify({
-        cidVersion: 0,
-      })
-      formData.append('pinataOptions', options);
+function Login() {
+
+  // const contractABI = require(process.env.REACT_APP_CONTRACT_ABI);
+
+  const [web3auth, setWeb3auth] = useState(null);
+  // const [provider, setProvider] = useState(null);
+
+  const user = useContext(UserContext).user;
+  const setUser = useContext(UserContext).setUser;
+  const provider = useContext(UserContext).provider;
+  const setProvider = useContext(UserContext).setProvider;
+
+  const clientId = process.env.REACT_APP_WEB3AUTH_CLIENTID;
+
+  useEffect(() => {
+
+    if (provider != null) {
+      console.log("inside");
+      handleLogin();
+    }
+
+    const init = async () => {
       try {
-        const res = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
-          maxBodyLength: "Infinity",
-          headers: {
-            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-            Authorization: process.env.REACT_APP_JWT
+        const web3auth = new Web3Auth({
+          clientId, 
+          web3AuthNetwork: "testnet",
+          chainConfig: {
+            chainNamespace: CHAIN_NAMESPACES.EIP155,
+            chainId: "0x5",
+          },
+          uiConfig: {
+            theme: "dark",
+            loginMethodsOrder: ["metamask"],
+            appLogo: "https://www.spritle.com/images/logo.svg", // Your App Logo Here
           }
         });
-        console.log(res.data);
+
+        const openloginAdapter = new OpenloginAdapter({
+          loginSettings: {
+            mfaLevel: "default", // Pass on the mfa level of your choice: default, optional, mandatory, none
+          },
+          adapterSettings: {
+            whiteLabel: {
+              name: "TrustX",
+              logoLight: "https://www.spritle.com/images/logo.svg",
+              logoDark: "https://www.spritle.com/images/logo.svg",
+              defaultLanguage: "en",
+              dark: true, // whether to enable dark mode. defaultValue: false
+            },
+          }
+        });
+        web3auth.configureAdapter(openloginAdapter);
+        setWeb3auth(web3auth);
+
+        await web3auth.initModal({
+          modalConfig: {
+            [WALLET_ADAPTERS.OPENLOGIN]: {
+              label: "openlogin",
+              // setting it to false will hide all social login methods from modal.
+              showOnModal: false,
+            },
+            [WALLET_ADAPTERS.METAMASK]: {
+              label: "metamask",
+              showOnModal: true
+            },
+            [WALLET_ADAPTERS.TORUS_EVM]: {
+              label: "torusevm",
+              showOnModal: false
+            },
+            [WALLET_ADAPTERS.WALLET_CONNECT_V1]: {
+              label: "wallerconnectv2",
+              showOnModal: false
+            }
+          },
+        });
+
+        if (web3auth.provider) {
+          setProvider(web3auth.provider);
+        };
+
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
-    };
-    const handleLogin = async() => {
-      let ii = await ethereum.request({ method: 'eth_requestAccounts', params: [] });
-      setUser(ii);
     };
 
-return(
+    init();
+  }, [provider, user]);
+
+  const handleLogin = async () => {
+    if (!web3auth) {
+      console.log("web3auth not initialized yet");
+      return;
+    }
+    const web3authProvider = await web3auth.connect();
+    setProvider(web3authProvider);
+    
+    if (web3authProvider) {
+      const rpc = new RPC(web3authProvider);
+      // var balance = await rpc.getBalance();
+
+      setUser(await rpc.getAccounts());
+    }
+  };
+
+  return (
     <div className="App">
-    <div>
-      {
-        (user===undefined &&
-        <Button onClick={handleLogin}> Login</Button>)
-        || ((user!==undefined) &&
-        <img src={metamask} alt="metamask" className='metaimg'/>)
-      }
+      <div>
+        {
+          (user === undefined &&
+            <Button onClick={handleLogin}> Login</Button>)
+          || ((user !== undefined) &&
+            <img src={metamask} alt="metamask" className='metaimg' />)
+        }
+      </div>
     </div>
-  </div>
-)
+  )
 }
 export default Login;
