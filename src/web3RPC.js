@@ -116,7 +116,7 @@ export default class EthereumRpc {
   async publishPaper(paperId) {
     try {
       if (this.contract) {
-        await this.contract.methods.publishPaper(paperId).call();
+        await this.contract.methods.publishPaper(paperId).send();
         return true;
       }
     } catch (error) {
