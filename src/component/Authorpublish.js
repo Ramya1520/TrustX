@@ -1,20 +1,27 @@
 import Header from './EnduserHeader';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import './Header.css'
 import './LastPublish.css'
 import Button from 'react-bootstrap/Button';
+import { UserContext } from '../App';
 function LastPublish() {
-  const [inputValues, setInputValues] = useState(['']);
+  const [inputValues, setInputValues] = useState([null]);
+  const user = useContext(UserContext).user;
+  const provider=useContext(UserContext).provider;
+  const [formErrors,setFormErrors]=useState()
+  const [selectedfileErrors,setSelectedFileErrors]=useState()
   const [formData, setFormData] = useState({
     title: '',
     numAuthors: '',
-    primaryAuthor: inputValues,
+    primaryAuthor: '',
     paperType: '',
     references: '',
   });
   
   const [selectedFile, setSelectedFile] = useState();
+  // const [user, setUser] = useState();
+  console.log(inputValues, "inputValues")
   
   const handleAddFields = () => {
     const values = [...inputValues];
@@ -24,14 +31,20 @@ function LastPublish() {
   
   const handleInputChange = (index, event) => {
     const values = [...inputValues];
+    const pattern = /^0x[a-fA-F0-9]*$/; 
     values[index] = event.target.value;
-    setInputValues(values);
+    if (pattern.test(values)) {
+      setInputValues(values);
+    }
+  
   };
- 
   useEffect(() => {
-    setFormData({ ...formData, primaryAuthor: inputValues });
-    console.log(formData)
+    if(inputValues[0] !== null){
+
+     setFormData({ ...formData, primaryAuthor: inputValues });
+    }
   }, [inputValues])
+
 
   const handleChange1 = (event) => {
     const { name, value } = event.target;
@@ -43,7 +56,7 @@ function LastPublish() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(formData);
+
   };
 
   useEffect(() => {
@@ -54,12 +67,21 @@ function LastPublish() {
     setSelectedFile(event.target.files[0]);
   };
   const handleSubmission = async () => {
+    let errors = {};
+    if (selectedFile==undefined) {
+      setSelectedFileErrors("ww")
+    }   
+    else{
+      setSelectedFileErrors()
+    }
+   
     const formData = new FormData();
     formData.append('file', selectedFile)
-
+    console.log(selectedFile?.name,"name")
     const metadata = JSON.stringify({
-      name: selectedFile.name,
+      name: selectedFile?.name,
     });
+  
     formData.append('pinataMetadata', metadata);
 
     const options = JSON.stringify({
@@ -76,12 +98,37 @@ function LastPublish() {
         }
       });
       console.log(res.data);
+      
     } catch (error) {
       console.log(error);
     }
     Submit()
   };
   const Submit = async (id) => {
+    let errors = {};
+    if (!formData.title) {
+      errors.title = "*Required field";
+  }
+  if (!formData.primaryAuthor) {
+      errors.primaryAuthor = "*Required field";
+  }
+
+  if (!formData.paperType) {
+      errors.paperType = "*Required field";
+  }
+  if (!formData.references) {
+      errors.references = "*Required field";
+  }
+  if (!formData.primaryAuthor) {
+    errors.primaryAuthor = "*must be start with 0x";
+    console.log(formData.primaryAuthor,"primaryauthor")
+}
+
+  if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+  }
+
     try {
       const response = await fetch("https://1b0b9541-6074-4786-9d00-98b5c74c99c4.mock.pstmn.io/abstracts", {
         method: 'POST',
@@ -106,6 +153,7 @@ function LastPublish() {
                       <div className='clo-sm-12' style={{ display: "flex", columnGap: "20px" }}>
                         <div className='clo-sm-6'>
                           <input type="text" placeholder='Title' name="title" value={formData.title} onChange={handleChange1} />
+                          {formErrors.title && <p className="error show-error" >{formErrors.title}</p>}
                         </div>
                         <div className='clo-sm-6'>
                           <select name="paperType" className='research' value={formData.paperType} onChange={handleChange1} >
@@ -113,23 +161,28 @@ function LastPublish() {
                             <option value="review">Review</option>
                             <option value="case-study">Case Study</option>
                           </select>
+                          {formErrors.paperType && <p className="error show-error">{formErrors.paperType}</p>}
                         </div>
                       </div>
                     </div>
                     <textarea name="references" className='slt' placeholder='References' value={formData.references} onChange={handleChange1}></textarea>
+                    {formErrors.references && <p className="error show-error">{formErrors.references}</p>}
                     <div className='row'>
                     <div className='col-sm-6'>
                     <input type="file" onChange={changeHandler} className="choose" />
+                    {selectedfileErrors&& <p className="error show-error ref-show">{"*Required field"}</p>}
                     </div>
 
                       {inputValues.map((value, index) => (
                         <div className='col-sm-6'>
                           <input
-                            placeholder='Author'
+                            placeholder='Author ID'
                             type="text"
                             value={value}
                             onChange={(event) => handleInputChange(index, event)}
+                            style={{paddingBottom:"20px"}}
                           />
+                         {formErrors.primaryAuthor && <p className="error show-error ref-show">{formErrors.primaryAuthor}</p>}
                         </div>
                       ))}
 
@@ -141,7 +194,7 @@ function LastPublish() {
                     </Button>
                     </div>
                     <div className='col-sm-6'>
-                    <Button onClick={handleSubmission}>Submit</Button>
+                    <Button onClick={()=>(handleSubmission())}>Submit</Button>
                     </div>
                     </div>
                   </form>

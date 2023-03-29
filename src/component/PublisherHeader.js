@@ -9,10 +9,6 @@ import Allpaper from './Allpaper';
 import { useLocation } from 'react-router-dom';
 function Header() {
   const [hasScrolled, setHasScrolled] = useState(false);
-  const [publish,setpublish]=useState(false)
-  const [allpaper,setAllpaper]=useState(true)
-  const [requests,setRequests]=useState(false)
-  const [Author,setAuthor]=useState(false)
   const Location=useLocation()
   const navigate=useNavigate()
 
@@ -44,17 +40,10 @@ function Header() {
     };
   }, []);
 
-  function Chat(){
-  }
-  
-  function Auth(){
-    navigate('/enduserauthor')
-  }
   function All(){  
  navigate('/enduserallpaper')
   }
-  function Notification(){
-  }
+
   return (
     <Navbar className={navbarClass} expand="lg" fixed="top">
       <div className='row header-row ' style={{width:"100vw",backgroundColor:"white" }}>
@@ -63,6 +52,7 @@ function Header() {
             <img src={Logo} className="logo" style={{ width: "50px", height: "50px" }}></img>
             <Login/>
           </div>
+
           <div className='col-sm-6 btnspace'>
             <Button  variant="light">Notification</Button>
             <Button   variant="light">Chats</Button>
@@ -70,8 +60,8 @@ function Header() {
             <Button  variant="light">Review</Button>
             <Button variant="light">Papers</Button>
             <Button  onClick={() => All()}  className={Location.pathname === '/authpublish' ? 'text-blue' : 'text-black'}  variant="light">Publish</Button>
-         
           </div>
+          
         </div>
       </div>
       </Navbar>
