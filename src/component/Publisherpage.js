@@ -6,7 +6,7 @@ import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { useContext } from 'react';
 import { UserContext } from "../App.js";
-import RPC from "../web3RPC";
+// import RPC from "../web3RPC";
 
 function Publisherpage() {
   const [publisherpage, setPublisherpage] = useState()
@@ -87,15 +87,17 @@ function Publisherpage() {
 
   const Publish = async (id) => {
     try {
-      const response = await fetch("", {
-        method: 'POST',
-        body: JSON.stringify({ "id": id }),
-      })
-      const data = await response.json();
+      if (user) {
+        var status = await rpc.publishPaper(user, id);
+        if (status)
+          console.log("published");
+        else
+          console.log("error in publish");
+      }
     } catch (error) {
       console.log(error);
     }
-    Details()
+    // Details()
   }
 
   const filterNames = e => {
@@ -119,11 +121,13 @@ function Publisherpage() {
                   <Card style={{ width: '90vw' }}>
                     <Card.Body>
                       <Card.Title>{element.title}</Card.Title>
+                      
+                      {element.authors.map((element)=>(
+                        <p style={{marginBottom:"2px"}}>
+                        Author Id :{element}</p>
+                      ))}
                       <div className='row'>
                         <div className='col-sm-6' style={{ display: "flex" }}>
-                          <Card.Subtitle className="mb-2 text-muted">{element.author}</Card.Subtitle>
-                          <Card.Subtitle className="mb-2 text-muted"> {"| "} </Card.Subtitle>
-                          <Card.Subtitle className="mb-2 text-muted">{element.id}</Card.Subtitle>
                         </div>
                       </div>
                       <Card.Text>
