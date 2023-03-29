@@ -82,11 +82,11 @@ export default class EthereumRpc {
     }
   }
 
-  async getPublisherHome(fromAddress) {
+  async getPublisherHome(fromAddress, flag) {
     try {
       let contract = this.getContract(fromAddress);
       if (contract) {
-        var paper_ids = await contract.methods.getPapers(fromAddress, false).call();
+        var paper_ids = await contract.methods.getPapers(fromAddress, flag).call();
         let papers = [];
 
         for(let i =0;i<paper_ids.length;i++) {

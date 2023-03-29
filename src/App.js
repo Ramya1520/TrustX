@@ -15,15 +15,15 @@ export let UserContext = createContext();
 function App(){
 
   let [user, setUser] = useState();
-  let [provider, setProvider] = useState();
+  let [rpc, setRPC] = useState();
 
-  useEffect(() => {
+  // useEffect(() => {
 
-  }, []);
+  // }, []);
  
    return(
     <div className='index'>
-         <UserContext.Provider value={{user, setUser, provider, setProvider}}>
+         <UserContext.Provider value={{user, setUser, rpc, setRPC}}>
       <Routes>
         <Route path="/allpaper" element={<Allpaper />} />
         <Route path="" element={<Publisherpage />} />

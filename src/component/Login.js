@@ -10,15 +10,13 @@ import RPC from "../web3RPC";
 
 function Login() {
 
-  // const contractABI = require(process.env.REACT_APP_CONTRACT_ABI);
-
   const [web3auth, setWeb3auth] = useState(null);
-  // const [provider, setProvider] = useState(null);
+  const [provider, setProvider] = useState(null);
 
   const user = useContext(UserContext).user;
   const setUser = useContext(UserContext).setUser;
-  const provider = useContext(UserContext).provider;
-  const setProvider = useContext(UserContext).setProvider;
+  const rpc = useContext(UserContext).rpc;
+  const setRPC = useContext(UserContext).setRPC;
 
   const clientId = process.env.REACT_APP_WEB3AUTH_CLIENTID;
 
@@ -105,10 +103,11 @@ function Login() {
     setProvider(web3authProvider);
     
     if (web3authProvider) {
-      const rpc = new RPC(web3authProvider);
+      const rpc_ = new RPC(web3authProvider);
       // var balance = await rpc.getBalance();
 
-      setUser(await rpc.getAccounts());
+      setUser(await rpc_.getAccounts());
+      setRPC(rpc_);
     }
   };
 

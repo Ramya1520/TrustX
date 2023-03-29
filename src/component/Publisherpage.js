@@ -20,13 +20,13 @@ function Publisherpage() {
   const handleClose1 = () => setShow1(false);
   const handleShow1 = () => setShow1(true);
   const user = useContext(UserContext).user;
-  const rpc = new RPC(useContext(UserContext).provider);
+  const rpc = useContext(UserContext).rpc;
 
   useEffect(() => {
     const init = async () => {
       if (user) {
         
-        var papers = await rpc.getPublisherHome(user);
+        var papers = await rpc.getPublisherHome(user, false);
   
         console.log("=== ", papers);
         let data = [];
