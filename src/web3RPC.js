@@ -125,9 +125,138 @@ export default class EthereumRpc {
     }
   }
 
-  async addAuthor() {
+  async addEntity(entityType, details) {
     try {
+      var resp = null;
+      if (this.contract) {
+        switch(entityType.toLowerCase()) {
+          case "reviewer":
+            resp = await this.contract.methods.addReviewer(details.addr, details.name).send();
+            console.log(resp);
+            break;
+          case "publisher":
+            resp = await this.contract.methods.addPublisher(details.addr, details.name).send();
+            console.log(resp);
+            break;
+          case "user":
+            resp = await this.contract.methods.addUser(details.addr, details.name).send();
+            console.log(resp);
+            break;
+          case "author":
+            resp = await this.contract.methods.addAuthor(details.addr, details.name, details.mail, details.contact).send();
+            console.log(resp);
+            break;
+          default:
+            console.log("Not available entitytype");
+            return false;
+        }
+        return resp.status;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
 
+  async getEntity(entityType, address) {
+    try {
+      if (this.contract) {
+        let returnable = { status: true };
+        switch(entityType.toLowerCase()) {
+          case "reviewer":
+            returnable.value = await this.contract.methods.getReviewer(address).call();
+            break;
+          case "publisher":
+            returnable.value = await this.contract.methods.getPublisher(address).call();
+            break;
+          case "user":
+            returnable.value = await this.contract.methods.getUser(address).call();
+            break;
+          case "author":
+            returnable.value = await this.contract.methods.getAuthor(address).call();
+            break;
+          default:
+            console.log("Not available entitytype");
+            returnable.status = false;
+            returnable.error = "Not available entitytype";
+            break;
+        }
+        return returnable;
+      }
+    } catch (error) {
+      console.log(error);
+      return {"status": false, "error": error};
+    }
+  }
+
+  async reviewPaper(paperId, result) {
+    try {
+      if (this.contract) {
+        var resp = await this.contract.methods.getReviewed(paperId, result).send();
+        return resp.status;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async submitPaper(title, category, contentHash, authors) {
+    try {
+      if (this.contract) {
+        var resp = await this.contract.methods.submitPaper(title, category, contentHash, authors).send({
+          value: 1000000000000000
+        });
+        return resp.status;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async voteUp(paperId) {
+    try {
+      if (this.contract) {
+        var resp = await this.contract.methods.voteUp(paperId).send();
+        return resp.status;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async voteDown(paperId) {
+    try {
+      if (this.contract) {
+        var resp = await this.contract.methods.voteDown(paperId).send();
+        return resp.status;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async readPaper(paperId) {
+    try {
+      if (this.contract) {
+        var resp = await this.contract.methods.readPaper(paperId).send();
+        return resp.status;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async getRewards() {
+    try {
+      if (this.contract) {
+        var resp = await this.contract.methods.getRewards().send();
+        return resp.status;
+      }
     } catch (error) {
       console.log(error);
       return false;
