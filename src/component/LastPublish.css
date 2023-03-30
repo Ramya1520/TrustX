@@ -136,3 +136,13 @@ width: 130%;;
   margin-bottom: -7px !important;
   font-size: small;
 }
+.authorid{
+  width: 200% !important;
+}
+.authorid1{
+  width: max-content;
+}
+.author-id{
+  display: flex;
+  row-gap: 20px;
+}

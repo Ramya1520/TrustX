@@ -40,9 +40,7 @@ function Header() {
     };
   }, []);
 
-  function All(){  
- navigate('/enduserallpaper')
-  }
+
 
   return (
     <Navbar className={navbarClass} expand="lg" fixed="top">
@@ -59,7 +57,7 @@ function Header() {
             <Button   variant="light">Rewards</Button>
             <Button  variant="light">Review</Button>
             <Button variant="light">Papers</Button>
-            <Button  onClick={() => All()}  className={Location.pathname === '/authpublish' ? 'text-blue' : 'text-black'}  variant="light">Publish</Button>
+            <Button    className={Location.pathname === '/lastpublish' ? 'text-blue' : 'text-black'}  variant="light">Publish</Button>
           </div>
           
         </div>
