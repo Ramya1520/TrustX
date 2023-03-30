@@ -74,6 +74,7 @@ function Enduserauthor() {
                     <div className='card-space row  card-dir'>
                         {
                             authorsdetail?.map((element, index) => (
+                                <div key={index}>
                                 <div className=' col-sm-3'>
                                     <Card style={{ width: "116%" }} >
                                         <Card.Body className='row over-row' >
@@ -111,6 +112,7 @@ function Enduserauthor() {
                                             </div>
                                         </Card.Body>
                                     </Card>
+                                </div>
                                 </div>
                             )
                             )

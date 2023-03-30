@@ -5,6 +5,10 @@ import './Header.css'
 import './LastPublish.css'
 import Button from 'react-bootstrap/Button';
 import { UserContext } from '../App';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer} from 'react-toastify';
+
 function LastPublish() {
   const [inputValues, setInputValues] = useState([null]);
   const user = useContext(UserContext).user;
@@ -174,6 +178,7 @@ function LastPublish() {
                     </div>
 
                       {inputValues.map((value, index) => (
+                          <div key={index}>
                         <div className='col-sm-6'>
                           <input
                             placeholder='Author ID'
@@ -183,6 +188,7 @@ function LastPublish() {
                             style={{paddingBottom:"20px"}}
                           />
                          {formErrors.primaryAuthor && <p className="error show-error ref-show">{formErrors.primaryAuthor}</p>}
+                        </div>
                         </div>
                       ))}
 

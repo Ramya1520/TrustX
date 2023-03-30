@@ -16,9 +16,12 @@
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
     "react-rating-stars-component": "^2.2.0",
+    "react-redux-toastr": "^7.6.11",
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
+    "react-toastify": "^9.1.2",
     "react-tooltip": "^5.10.1",
+    "reactjs-toastr": "^1.1.0",
     "stream": "^0.0.2",
     "web-vitals": "^3.1.1",
     "web3": "^1.8.2"

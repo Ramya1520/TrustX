@@ -89,6 +89,7 @@ setRating(newRating)
         <input type="type" className='form-control  searchbar' onChange={(e) => filterNames(e)} placeholder="Search Title" />
         {
           publisherpage?.map((element, index) => (
+            <div key={index}>
             <div className='card-div'>
               <Card style={{ width: '90vw' }}>
                 <Card.Body>
@@ -130,6 +131,7 @@ setRating(newRating)
                 </Card.Body>
               </Card>
             </div>
+            </div>
           )
           )
         }
@@ -170,10 +172,12 @@ setRating(newRating)
           <Modal.Title>Abstract</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {abstract?.map((element) => {
+          {abstract?.map((index,element) => {
             return (
               <div>
+                  <div key={index}>
                 <p style={{ textAlign: 'justify' }}>{element.abstract}</p>
+                </div>
               </div>
             )
           })}
