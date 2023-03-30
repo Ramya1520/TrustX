@@ -29,8 +29,8 @@ function Publisherpage() {
     const init = async () => {
       if (user) {
         var papers = await rpc.getPublisherHome(user, false);
-        console.log("=== ", papers);
-        if (papers.length == 1 && papers[0][0].id == 0) {
+        // console.log("=== ", papers);
+        if (papers.length == 0) {
           setDefaultContent("Empty array returned");
           return;
         }
@@ -45,48 +45,6 @@ function Publisherpage() {
     init();
   }, [user])
 
-  // const Details = () => {
-  //   fetch("https://b1db9323-a6f5-4c92-b089-17457f1cbb07.mock.pstmn.io/publisherpublish", {
-  //     method: 'GET',
-  //   }
-  //   )
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       setPublisherpage(data)
-  //       setFilterdata(data)
-  //     })
-  //     .catch(err => console.log(err));
-  // }
-
-  // const View_Review = async (id) => {
-  //   try {
-  //     const response = await fetch("https://f98375b8-2beb-4b97-8f4d-863c96e09021.mock.pstmn.io/review", {
-  //       method: 'POST',
-  //       body: JSON.stringify({ "id": id }),
-  //     })
-  //     const data = await response.json();
-  //     setViewreview(data);
-
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //   handleShow()
-  // }
-
-  // const See_Abstract = async (id) => {
-  //   try {
-  //     const response = await fetch("https://1b0b9541-6074-4786-9d00-98b5c74c99c4.mock.pstmn.io/abstracts", {
-  //       method: 'POST',
-  //       body: JSON.stringify({ "id": id }),
-  //     })
-  //     const data = await response.json();
-  //     setAbstract(data);
-
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //   handleShow1();
-  // }
   const downloadPaper = async (url,filename) => {
     return new Promise((res, rej) => {
       fetch(url)
@@ -109,14 +67,14 @@ function Publisherpage() {
   const Publish = async (id) => {
     try {
       if (user) {
-        var status = await rpc.publishPaper(id);
-        if (status) {
-          console.log(status);
+        var resp = await rpc.publishPaper(id);
+        if (resp.status) {
+          // console.log(status);
           toast.success("Paper published!", {
             position: toast.POSITION.TOP_RIGHT
           });
         } else {
-          toast.error("You are not a publisher!", {
+          toast.error(resp.error, {
             position: toast.POSITION.TOP_RIGHT
           });
         }

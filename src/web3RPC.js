@@ -100,9 +100,11 @@ export default class EthereumRpc {
         var paper_ids = await this.contract.methods.getPapers(fromAddress, flag).call();
         let papers = [];
 
-        for(let i =0;i<paper_ids.length;i++) {
-          let paper = await this.contract.methods.readPaper_alternate(paper_ids[i]).call();
-          papers.push(paper);
+        for (let i = 0; i < paper_ids.length; i++) {
+          if (paper_ids[i] > 0) {
+            let paper = await this.contract.methods.readPaper_alternate(paper_ids[i]).call();
+            papers.push(paper);
+          }
         }
 
         return papers;
@@ -117,11 +119,11 @@ export default class EthereumRpc {
     try {
       if (this.contract) {
         await this.contract.methods.publishPaper(paperId).send();
-        return true;
+        return {status: true};
       }
     } catch (error) {
       console.log(error);
-      return false;
+      return {status: false, error: error};
     }
   }
 
@@ -129,7 +131,7 @@ export default class EthereumRpc {
     try {
       var resp = null;
       if (this.contract) {
-        switch(entityType.toLowerCase()) {
+        switch (entityType.toLowerCase()) {
           case "reviewer":
             resp = await this.contract.methods.addReviewer(details.addr, details.name).send();
             console.log(resp);
@@ -162,7 +164,7 @@ export default class EthereumRpc {
     try {
       if (this.contract) {
         let returnable = { status: true };
-        switch(entityType.toLowerCase()) {
+        switch (entityType.toLowerCase()) {
           case "reviewer":
             returnable.value = await this.contract.methods.getReviewer(address).call();
             break;
@@ -185,7 +187,7 @@ export default class EthereumRpc {
       }
     } catch (error) {
       console.log(error);
-      return {"status": false, "error": error};
+      return { "status": false, "error": error };
     }
   }
 
@@ -204,14 +206,15 @@ export default class EthereumRpc {
   async submitPaper(title, category, contentHash, authors) {
     try {
       if (this.contract) {
+        // let auth = this.contract.submitPaper.getData(authors);
         var resp = await this.contract.methods.submitPaper(title, category, contentHash, authors).send({
           value: 1000000000000000
         });
-        return resp.status;
+        return {status: resp.status};
       }
     } catch (error) {
       console.log(error);
-      return false;
+      return {status: false, error: error};
     }
   }
 

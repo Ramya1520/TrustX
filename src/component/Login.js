@@ -15,16 +15,16 @@ function Login() {
 
   const user = useContext(UserContext).user;
   const setUser = useContext(UserContext).setUser;
-  // const rpc = useContext(UserContext).rpc;
+  const rpc = useContext(UserContext).rpc;
   const setRPC = useContext(UserContext).setRPC;
 
   const clientId = process.env.REACT_APP_WEB3AUTH_CLIENTID;
 
   useEffect(() => {
 
-    if (provider != null) {
+    if (provider != null || rpc != null) {
       console.log("inside");
-      handleLogin();
+      // handleLogin();
     }
 
     const init = async () => {

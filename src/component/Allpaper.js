@@ -8,6 +8,7 @@ import Rating from "react-rating-stars-component";
 import "./Allpaper.css";
 import { useContext } from "react";
 import { UserContext } from "../App.js";
+import { toast } from 'react-toastify';
 
 function Allpaper() {
   const [publisherpage, setPublisherpage] = useState();
@@ -28,8 +29,8 @@ function Allpaper() {
     const init = async () => {
       if (user) {
         var papers = await rpc.getPublisherHome(user, true);
-        console.log("=== ", papers);
-        if (papers.length == 1 && papers[0][0].id == 0) {
+        // console.log("=== ", papers);
+        if (papers.length == 0) {
           setDefaultContent("Empty array returned");
           return;
         }

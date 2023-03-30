@@ -11,7 +11,7 @@ import { ToastContainer } from "react-toastify";
 // import Tooltip from "@material-ui/core/Tooltip";
 // import InfoIcon from "@material-ui/icons/Info";
 // import IconButton from "@material-ui/core/IconButton";
-import { array } from "yargs";
+
 function LastPublish() {
   const [inputValues, setInputValues] = useState([null]);
   const user = useContext(UserContext).user;
@@ -28,9 +28,6 @@ function LastPublish() {
     paperType: "",
   });
   const [selectedFile, setSelectedFile] = useState();
-  // const [user, setUser] = useState();
-  console.log(formData, "inputValues");
-  console.log(formData, "inputValues");
   const handleAddFields = () => {
     const values = [...inputValues];
     values.push("");
@@ -39,8 +36,8 @@ function LastPublish() {
   const handleInputChange = (index, event) => {
     const values = [...inputValues];
     values[index] = event.target.value;
-      setInputValues(values);
-    
+    setInputValues(values);
+
   };
   useEffect(() => {
     if (inputValues[0] !== null) {
@@ -57,12 +54,11 @@ function LastPublish() {
   const handleSubmit = (event) => {
     event.preventDefault();
   };
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
   };
   const handleSubmission = async () => {
-    let errors = {};
     if (selectedFile == undefined) {
       setSelectedFileErrors("ww");
     } else {
@@ -71,11 +67,12 @@ function LastPublish() {
     if (
       formData.title &&
       formData.primaryAuthor &&
-      formData.paperType 
+      formData.paperType
     ) {
+
       const formData_post = new FormData();
       formData_post.append("file", selectedFile);
-      console.log(selectedFile?.name, "name");
+      // console.log(selectedFile?.name, "name");
       const metadata = JSON.stringify({
         name: selectedFile?.name,
       });
@@ -96,16 +93,18 @@ function LastPublish() {
             },
           }
         );
-        let authors = "[";
-        formData.primaryAuthor.forEach(element => {
-          authors += '"' + element + '"';
-        });
-        authors += "]";
 
-        if (await rpc.submitPaper(formData.title, formData.paperType, res.data.IpfsHash, authors))
-          console.log("submitted successfully");
-        else
-          console.log("failed");
+        let resp = await rpc.submitPaper(formData.title, formData.paperType, res.data.IpfsHash, formData.primaryAuthor);
+        if (resp.status) {
+          toast.success("Submitted Sucessfully", {
+            position: toast.POSITION.TOP_RIGHT
+          });
+        } else {
+          toast.error(resp.error, {
+            position: toast.POSITION.TOP_RIGHT
+          });
+        }
+
       } catch (error) {
         console.log(error);
       }
@@ -131,15 +130,6 @@ function LastPublish() {
       setFormErrors(errors);
       return;
     }
-    // try {
-    //   const response = await fetch("https://1b0b9541-6074-4786-9d00-98b5c74c99c4.mock.pstmn.io/abstracts", {
-    //     method: 'POST',
-    //     body: JSON.stringify(formData),
-    //   })
-    //   const data = await response.json();
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
   return (
     <div>
@@ -202,23 +192,23 @@ function LastPublish() {
                       </div>
                     </div>
                     <div className="row">
-                        <div className="col-sm-12">
-                          <input
-                            type="file"
-                            onChange={changeHandler}
-                            className="choose"
-                          />
-                          {selectedfileErrors && (
-                            <p className="error show-error ref-show">
-                              {"*Required field"}
-                            </p>
-                          )}
-                        </div>
-                        </div>
-                        <div className="row author-id" >
-                        {inputValues.map((value, index) => (
-                          <div key={index}>
-                          <div className="col-sm-12" style={{display:"flex"}}>
+                      <div className="col-sm-12">
+                        <input
+                          type="file"
+                          onChange={changeHandler}
+                          className="choose"
+                        />
+                        {selectedfileErrors && (
+                          <p className="error show-error ref-show">
+                            {"*Required field"}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="row author-id" >
+                      {inputValues.map((value, index) => (
+                        <div key={index}>
+                          <div className="col-sm-12" style={{ display: "flex" }}>
                             <div key={index} className="col-sm-12" >
                               <input
                                 placeholder="Author ID"
@@ -240,16 +230,16 @@ function LastPublish() {
                             </div>
                           </div>
                           {formErrors.primaryAuthor && (
-                              <p className="error show-error ref-show authorid1">
-                                {formErrors.primaryAuthor}
-                              </p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                            <p className="error show-error ref-show authorid1">
+                              {formErrors.primaryAuthor}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                     {/* </div> */}
                     <div className="row">
-                    <div className="col-sm-6">
+                      <div className="col-sm-6">
                         <Button type="button" onClick={handleAddFields}>
                           Add Field
                         </Button>
